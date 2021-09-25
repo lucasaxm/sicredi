@@ -1,0 +1,31 @@
+Pauta
+Sessao
+Associado
+
+/pautas
+GET		/pautas			lista pautas
+POST 	/pautas			cria pauta
+
+GET		/pautas/:id			abre detalhes pauta
+PUT 	/pautas/:id			substitui pauta
+PATCH 	/pautas/:id			atualiza pauta
+DELETE 	/pautas/:id			deleta pauta
+
+POST 	/pautas/:id/sessao	abre sessao { duracao: xx }
+
+GET 	/pautas/:idPauta/sessao/:idSessao	status da sessão { status: aberta/fechada, resultados: { sim: X, nao: Y }, tempoRestante: XX segundos }
+POST 	/pautas/:idPauta/sessao/:idSessao	votar na sessão { voto: N}
+
+GET		/pautas/search	busca pauta
+
+
+/associados
+GET		/associados			lista associados
+POST 	/associados			cria associado { nome: xxx. cpf: yyy }
+
+GET		/associados/:id			abre detalhes pauta
+PUT 	/associados/:id			substitui pauta
+PATCH 	/associados/:id			atualiza pauta
+DELETE 	/associados/:id			deleta pauta
+
+GET		/pautas/search	busca associado
