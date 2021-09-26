@@ -1,10 +1,12 @@
 package com.sicredi.assembleia.services;
 
 import com.sicredi.assembleia.entities.Associado;
+import com.sicredi.assembleia.entities.Pauta;
 import com.sicredi.assembleia.errorhandling.exceptions.DataNotFoundException;
 import com.sicredi.assembleia.errorhandling.exceptions.NoSearchParametersException;
 import com.sicredi.assembleia.errorhandling.exceptions.NotUniqueException;
 import com.sicredi.assembleia.repositories.AssociadoRepository;
+import com.sicredi.assembleia.repositories.PautaRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,14 +25,17 @@ class AssociadoServiceTest {
     private AssociadoService service;
 
     @MockBean
-    private AssociadoRepository repository;
+    private AssociadoRepository associadoRepository;
+
+    @MockBean
+    private PautaRepository pautaRepository;
 
     @Test
     void testFindAll() {
         Associado first = new Associado("1111", "2222", "3333");
         Associado second = new Associado("4444", "5555", "6666");
 
-        when(repository.findAll()).thenReturn(List.of(first, second));
+        when(associadoRepository.findAll()).thenReturn(List.of(first, second));
 
         List<Associado> associados = service.findAll();
 
@@ -43,7 +48,7 @@ class AssociadoServiceTest {
         Associado withoutId = new Associado(null,"2222", "3333");
         Associado withId = new Associado("1111", "2222", "3333");
 
-        when(repository.save(withoutId)).thenReturn(withId);
+        when(associadoRepository.save(withoutId)).thenReturn(withId);
 
         Associado associado = service.newAssociado(withoutId);
 
@@ -59,8 +64,8 @@ class AssociadoServiceTest {
         Associado replace = new Associado(null,"0000", "9999");
         Associado expected = new Associado(old.getId(),"0000", "9999");
 
-        when(repository.findById(old.getId())).thenReturn(Optional.of(old));
-        when(repository.save(expected)).thenReturn(expected);
+        when(associadoRepository.findById(old.getId())).thenReturn(Optional.of(old));
+        when(associadoRepository.save(expected)).thenReturn(expected);
 
         Associado associado = service.replaceAssociado(old.getId(), replace);
 
@@ -72,7 +77,7 @@ class AssociadoServiceTest {
     void testDeleteAssociado() throws DataNotFoundException {
         Associado old = new Associado("1111", "2222", "3333");
 
-        when(repository.findById(old.getId())).thenReturn(Optional.of(old));
+        when(associadoRepository.findById(old.getId())).thenReturn(Optional.of(old));
 
         service.deleteAssociado(old.getId());
 
@@ -85,9 +90,9 @@ class AssociadoServiceTest {
         Associado second = new Associado("4444", "5555", "6666");
         Associado third = new Associado("7777", "5555", "3399");
 
-        when(repository.findByNomeContainsIgnoreCaseAndCpfContainsIgnoreCase("2222", "3333")).thenReturn(List.of(first));
-        when(repository.findByCpfContainsIgnoreCase("33")).thenReturn(List.of(first,third));
-        when(repository.findByNomeContainsIgnoreCase("5555")).thenReturn(List.of(second,third));
+        when(associadoRepository.findByNomeContainsIgnoreCaseAndCpfContainsIgnoreCase("2222", "3333")).thenReturn(List.of(first));
+        when(associadoRepository.findByCpfContainsIgnoreCase("33")).thenReturn(List.of(first,third));
+        when(associadoRepository.findByNomeContainsIgnoreCase("5555")).thenReturn(List.of(second,third));
 
         List<Associado> associados = service.searchAssociado("3333","2222");
 
@@ -118,7 +123,7 @@ class AssociadoServiceTest {
     void testFindById() throws DataNotFoundException {
         Associado first = new Associado("1111", "2222", "3333");
 
-        when(repository.findById(first.getId())).thenReturn(Optional.of(first));
+        when(associadoRepository.findById(first.getId())).thenReturn(Optional.of(first));
 
         Associado associado = service.findById("1111");
 
@@ -136,17 +141,17 @@ class AssociadoServiceTest {
         Associado replaceNome = new Associado(null,"0000", null);
         Associado expected2 = new Associado(expected1.getId(),"0000", "9999");
 
-        when(repository.findById(old.getId())).thenReturn(Optional.of(old));
-        when(repository.findByCpf(replaceCpf.getCpf())).thenReturn(null);
-        when(repository.save(expected1)).thenReturn(expected1);
+        when(associadoRepository.findById(old.getId())).thenReturn(Optional.of(old));
+        when(associadoRepository.findByCpf(replaceCpf.getCpf())).thenReturn(null);
+        when(associadoRepository.save(expected1)).thenReturn(expected1);
 
         Associado associado = service.updateAssociado(old.getId(), replaceCpf);
 
         assertNotNull(associado);
         assertEquals(expected1, associado);
 
-        when(repository.findById(expected1.getId())).thenReturn(Optional.of(expected1));
-        when(repository.save(expected2)).thenReturn(expected2);
+        when(associadoRepository.findById(expected1.getId())).thenReturn(Optional.of(expected1));
+        when(associadoRepository.save(expected2)).thenReturn(expected2);
 
         associado = service.updateAssociado(expected1.getId(), replaceNome);
 
@@ -156,11 +161,26 @@ class AssociadoServiceTest {
         replaceCpf.setCpf("5555");
         Associado conflict = new Associado("5555", "5555", "5555");
 
-        when(repository.findByCpf(replaceCpf.getCpf())).thenReturn(conflict);
+        when(associadoRepository.findByCpf(replaceCpf.getCpf())).thenReturn(conflict);
 
         assertThrows(NotUniqueException.class,
                 () -> service.updateAssociado(expected2.getId(), replaceCpf)
         );
 
+    }
+
+    @Test
+    void testFindPautasByAssociadoId() throws DataNotFoundException {
+        Associado associado = new Associado("1111", "2222", "3333");
+        Pauta pauta = new Pauta("4444", "5555", "6666", associado);
+
+        when(associadoRepository.findById(associado.getId())).thenReturn(Optional.of(associado));
+        when(pautaRepository.findByAutor(associado)).thenReturn(List.of(pauta));
+
+        List<Pauta> pautas = service.findPautasByAssociadoId(associado.getId());
+
+        assertFalse(pautas.isEmpty());
+        assertEquals(1, pautas.size());
+        assertEquals(pauta, pautas.get(0));
     }
 }

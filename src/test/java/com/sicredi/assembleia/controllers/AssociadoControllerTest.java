@@ -1,7 +1,9 @@
 package com.sicredi.assembleia.controllers;
 
 import com.sicredi.assembleia.entities.Associado;
+import com.sicredi.assembleia.entities.Pauta;
 import com.sicredi.assembleia.repositories.AssociadoRepository;
+import com.sicredi.assembleia.repositories.PautaRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,14 +35,14 @@ class AssociadoControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    MongoTemplate mongoTemplate;
+    AssociadoRepository associadoRepository;
 
     @Autowired
-    AssociadoRepository repository;
+    PautaRepository pautaRepository;
 
     @BeforeEach
     public void databaseSeed() {
-        repository.saveAll(List.of(
+        associadoRepository.saveAll(List.of(
             new Associado(null, "TestNome1", "TestCpf1"),
             new Associado(null, "TestNome2", "TestCpf2"),
             new Associado(null, "TestNome3", "TestCpf3"),
@@ -51,7 +52,7 @@ class AssociadoControllerTest {
 
     @AfterEach
     public void databasePurge() {
-        repository.deleteAll();
+        associadoRepository.deleteAll();
     }
 
     @Test
@@ -76,7 +77,7 @@ class AssociadoControllerTest {
 
     @Test
     void getAssociadoById() throws Exception {
-        Associado associado = repository.findAll().get(0);
+        Associado associado = associadoRepository.findAll().get(0);
 
         mockMvc.perform(get("/associados/{id}", associado.getId())).andDo(print()).andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(associado.getId()))
@@ -86,19 +87,19 @@ class AssociadoControllerTest {
 
     @Test
     void deleteAssociadoById() throws Exception {
-        Associado associado = repository.findAll().get(0);
+        Associado associado = associadoRepository.findAll().get(0);
 
         mockMvc.perform(delete("/associados/{id}", associado.getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").doesNotExist());
 
-        assertFalse(repository.findById(associado.getId()).isPresent());
+        assertFalse(associadoRepository.findById(associado.getId()).isPresent());
     }
 
     @Test
     void replaceAssociadoById() throws Exception {
-        Associado associado = repository.findAll().get(0);
+        Associado associado = associadoRepository.findAll().get(0);
 
         mockMvc.perform(put("/associados/{id}", associado.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -109,7 +110,7 @@ class AssociadoControllerTest {
                 .andDo(print()).andExpect(status().isOk())
                 .andExpect(header().exists("location"));
 
-        Optional<Associado> replaced = repository.findById(associado.getId());
+        Optional<Associado> replaced = associadoRepository.findById(associado.getId());
 
         assertTrue(replaced.isPresent());
         assertEquals(associado.getId(), replaced.get().getId());
@@ -119,7 +120,7 @@ class AssociadoControllerTest {
 
     @Test
     void updateAssociadoById() throws Exception {
-        Associado associado = repository.findAll().get(0);
+        Associado associado = associadoRepository.findAll().get(0);
 
         mockMvc.perform(patch("/associados/{id}", associado.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -129,7 +130,7 @@ class AssociadoControllerTest {
                 .andDo(print()).andExpect(status().isOk())
                 .andExpect(header().exists("location"));
 
-        Optional<Associado> updated = repository.findById(associado.getId());
+        Optional<Associado> updated = associadoRepository.findById(associado.getId());
 
         assertTrue(updated.isPresent());
         assertEquals(associado.getId(), updated.get().getId());
@@ -163,5 +164,19 @@ class AssociadoControllerTest {
                         .param("nome","TestNome"))
                 .andDo(print()).andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(4));
+    }
+
+    @Test
+    void testGetPautasByAssociadoId() throws Exception {
+        Associado associado = associadoRepository.findAll().get(0);
+        Pauta pauta = pautaRepository.save(new Pauta(null, "testTitulo1", "testDescricao1", associado));
+
+        mockMvc.perform(get("/associados/{id}/pautas", associado.getId()))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[:1].id").value(pauta.getId()))
+                .andExpect(jsonPath("$[:1].titulo").value(pauta.getTitulo()))
+                .andExpect(jsonPath("$[:1].descricao").value(pauta.getDescricao()))
+                .andExpect(jsonPath("$[:1].autor.id").value(associado.getId()));
     }
 }

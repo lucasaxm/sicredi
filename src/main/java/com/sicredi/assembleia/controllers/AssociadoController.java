@@ -1,6 +1,7 @@
 package com.sicredi.assembleia.controllers;
 
 import com.sicredi.assembleia.entities.Associado;
+import com.sicredi.assembleia.entities.Pauta;
 import com.sicredi.assembleia.errorhandling.exceptions.DataNotFoundException;
 import com.sicredi.assembleia.errorhandling.exceptions.NoSearchParametersException;
 import com.sicredi.assembleia.errorhandling.exceptions.NotUniqueException;
@@ -47,6 +48,11 @@ public class AssociadoController {
     @GetMapping(value = "/{id}")
     public Associado getAssociadoById(@PathVariable String id) throws DataNotFoundException {
         return service.findById(id);
+    }
+
+    @GetMapping(value = "/{id}/pautas")
+    public List<Pauta> getPautasByAssociadoId(@PathVariable String id) throws DataNotFoundException {
+        return service.findPautasByAssociadoId(id);
     }
 
     @DeleteMapping(value = "/{id}")

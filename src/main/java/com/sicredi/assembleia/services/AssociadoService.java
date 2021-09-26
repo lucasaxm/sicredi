@@ -1,6 +1,7 @@
 package com.sicredi.assembleia.services;
 
 import com.sicredi.assembleia.entities.Associado;
+import com.sicredi.assembleia.entities.Pauta;
 import com.sicredi.assembleia.errorhandling.exceptions.DataNotFoundException;
 import com.sicredi.assembleia.errorhandling.exceptions.NoSearchParametersException;
 import com.sicredi.assembleia.errorhandling.exceptions.NotUniqueException;
@@ -21,4 +22,6 @@ public interface AssociadoService {
     Associado findById(String id) throws DataNotFoundException;
 
     Associado updateAssociado(String id, Associado associado) throws DataNotFoundException, NotUniqueException;
+
+    List<Pauta> findPautasByAssociadoId(String id) throws DataNotFoundException;
 }

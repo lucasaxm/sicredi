@@ -28,4 +28,8 @@ PUT 	/associados/:id			substitui pauta
 PATCH 	/associados/:id			atualiza pauta
 DELETE 	/associados/:id			deleta pauta
 
-GET		/pautas/search	busca associado
+GET		/associados/:id/pautas	lista pautas criadas pelo associado
+
+GET		/associados/search	busca associado
+
+{ "nome": "xxx", "cpf": "yyy" }
