@@ -1,7 +1,5 @@
-package com.sicredi.assembleia.errorhandling;
+package com.sicredi.assembleia.errorhandling.apierrors;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 
@@ -29,7 +27,7 @@ public class ApiError {
     public ApiError(HttpStatus status, Throwable ex) {
         this();
         this.status = status;
-        this.message = "Unexpected error";
+        this.message = ex.getMessage();
         this.debugMessage = ex.getLocalizedMessage();
     }
 

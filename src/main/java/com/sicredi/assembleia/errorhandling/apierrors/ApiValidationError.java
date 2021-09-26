@@ -1,5 +1,6 @@
-package com.sicredi.assembleia.errorhandling;
+package com.sicredi.assembleia.errorhandling.apierrors;
 
+import com.sicredi.assembleia.errorhandling.apierrors.ApiSubError;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,17 +1,22 @@
 package com.sicredi.assembleia.errorhandling.validators;
 
 import com.sicredi.assembleia.entities.Associado;
+import com.sicredi.assembleia.errorhandling.ErrorMessages;
+import com.sicredi.assembleia.helpers.Utils;
 import com.sicredi.assembleia.repositories.AssociadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-@Component("beforeCreateAssociadoValidator")
+@Component
 public class AssociadoValidator implements Validator {
 
     @Autowired
-    AssociadoRepository repository;
+    private AssociadoRepository repository;
+
+    private final Utils utils = Utils.getInstance();
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -21,17 +26,16 @@ public class AssociadoValidator implements Validator {
     @Override
     public void validate(Object obj, Errors errors) {
         Associado associado = (Associado) obj;
-        if (checkInputString(associado.getNome())) {
-            errors.rejectValue("nome", "required", ValidationErrors.REQUIRED);
+        if (utils.isNullOrEmpty(associado.getNome())) {
+            errors.rejectValue("nome", "required", ErrorMessages.REQUIRED);
         }
-        if (checkInputString(associado.getCpf())) {
-            errors.rejectValue("cpf", "required", ValidationErrors.REQUIRED);
-        } else if (!repository.findByCpf(associado.getCpf()).isEmpty()){
-            errors.rejectValue("cpf", "unique", ValidationErrors.UNIQUE);
+        if (utils.isNullOrEmpty(associado.getCpf())) {
+            errors.rejectValue("cpf", "required", ErrorMessages.REQUIRED);
+        } else {
+            Associado found = repository.findByCpf(associado.getCpf());
+            if (found != null && !found.getId().equals(associado.getId())){
+                errors.rejectValue("cpf", "unique", String.format(ErrorMessages.UNIQUE, "cpf"));
+            }
         }
-    }
-
-    private boolean checkInputString(String input) {
-        return (input == null || input.trim().length() == 0);
     }
 }
