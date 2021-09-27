@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.event.ValidatingRepositoryEventListener;
 import org.springframework.validation.Validator;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +19,7 @@ public class ValidatorEventRegister implements InitializingBean {
     private Map<String, Validator> validators;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         List<String> events = List.of("beforeCreate");
         for (Map.Entry<String, Validator> entry : validators.entrySet()) {
             events.stream()

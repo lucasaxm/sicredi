@@ -1,0 +1,55 @@
+GET http://localhost:8080/pautas
+
+###
+
+GET http://localhost:8080/pautas/6150e6793e225775918be789
+
+###
+
+POST http://localhost:8080/pautas
+Content-Type: application/json
+
+{
+  "titulo": "Teste2",
+  "descricao": "Essa pauta é um teste",
+  "autor": {
+    "id": "614ffab3ffb46c6c4be98df1"
+  }
+}
+
+###
+
+GET http://localhost:8080/pautas/busca?titulo=teste
+
+
+###
+
+DELETE http://localhost:8080/pautas/6150df803e225775918be788
+
+###
+
+PUT http://localhost:8080/pautas/6150e6793e225775918be789
+Content-Type: application/json
+
+{
+  "titulo": "Teste3",
+  "descricao": "boa tarde",
+  "autor": {
+    "id": "614f9087697faa0bef537aa1"
+  }
+}
+
+
+###
+
+PATCH http://localhost:8080/pautas/6150e6793e225775918be789
+Content-Type: application/json
+
+{
+  "autor": {
+    "id": "6151d4f1a8a3767186056cba"
+  }
+}
+
+
+###

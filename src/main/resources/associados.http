@@ -1,0 +1,80 @@
+GET http://localhost:8080/associados
+
+###
+
+GET http://localhost:8080/associados/614f874ebbd3b06e9aa70b18/pautas
+
+###
+
+# curl -i -X POST -H "Content-Type:application/json" -d "{  \"firstName\" : \"Frodo\",  \"lastName\" : \"Baggins\" }" http://localhost:8080/people
+POST http://localhost:8080/associados
+Content-Type: application/json
+
+{
+  "nome": "Sr. CPF Válido",
+  "cpf": "90988398001"
+}
+
+###
+
+# Teste cpf vazio
+POST http://localhost:8080/associados
+Content-Type: application/json
+
+{
+  "nome": "",
+  "cpf": ""
+}
+
+###
+
+# Teste sem nome e cpf
+POST http://localhost:8080/associados
+Content-Type: application/json
+
+{}
+
+###
+
+# Teste campo desconhecido
+POST http://localhost:8080/associados
+Content-Type: application/json
+
+{
+  "lucas": "nome",
+  "nome": "teste",
+  "cpf": "teste2"
+}
+
+###
+
+GET http://localhost:8080/associados/busca?nome=morais
+
+###
+
+GET http://localhost:8080/associados/614ffab3ffb46c6c4be98df1
+
+###
+
+DELETE http://localhost:8080/associados/614fee79ae19472eaa6daf0d
+
+###
+
+PUT http://localhost:8080/associados/614ffab3ffb46c6c4be98df1
+Content-Type: application/json
+
+{
+  "nome": "Lucas Morais",
+  "cpf": "123123123"
+}
+
+###
+
+PATCH http://localhost:8080/associados/614ffab3ffb46c6c4be98df1
+Content-Type: application/json
+
+{
+  "cpf": "0000000"
+}
+
+###

@@ -6,7 +6,6 @@ import com.sicredi.assembleia.helpers.Utils;
 import com.sicredi.assembleia.repositories.AssociadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 

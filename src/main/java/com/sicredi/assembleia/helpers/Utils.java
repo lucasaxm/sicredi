@@ -34,8 +34,8 @@ public class Utils {
         URL url = new URL(String.format("https://user-info.herokuapp.com/users/%s", cpf));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
-        con.setConnectTimeout(5000);
-        con.setReadTimeout(5000);
+        con.setConnectTimeout(10000);
+        con.setReadTimeout(10000);
 
         if (con.getResponseCode() != HttpStatus.OK.value()){
             throw new InvalidCpfException(cpf);

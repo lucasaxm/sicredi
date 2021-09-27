@@ -3,7 +3,6 @@ package com.sicredi.assembleia.services;
 import com.sicredi.assembleia.entities.Pauta;
 import com.sicredi.assembleia.errorhandling.exceptions.DataNotFoundException;
 import com.sicredi.assembleia.errorhandling.exceptions.NoSearchParametersException;
-import com.sicredi.assembleia.errorhandling.exceptions.NotUniqueException;
 
 import java.util.List;
 

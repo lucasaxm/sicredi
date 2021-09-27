@@ -13,7 +13,5 @@ public interface PautaRepository extends MongoRepository<Pauta, String> {
 
     List<Pauta> findByTituloContainsIgnoreCaseAndDescricaoContainsIgnoreCase(String titulo, String descricao);
 
-    List<Pauta> findByDescricao(String descricao);
-
     List<Pauta> findByAutor(Associado autor);
 }

@@ -1,0 +1,32 @@
+GET http://localhost:8080/pautas/6150e6793e225775918be789/sessoes
+
+###
+
+POST http://localhost:8080/pautas/6150e6793e225775918be789/sessoes
+Content-Type: application/json
+
+{
+  "duracao": 600
+}
+
+###
+
+GET http://localhost:8080/pautas/6150e6793e225775918be789/sessoes/6151d506a8a3767186056cbb
+
+###
+
+POST http://localhost:8080/pautas/6150e6793e225775918be789/sessoes/6151d506a8a3767186056cbb
+Content-Type: application/json
+
+{
+  "voto": "sim",
+  "associado": {
+    "id":"6151422fff86a42085b80c3b"
+  }
+}
+
+###
+
+GET https://user-info.herokuapp.com/users/86288366757
+
+###

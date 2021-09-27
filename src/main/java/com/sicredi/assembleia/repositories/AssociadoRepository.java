@@ -7,12 +7,11 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface AssociadoRepository extends MongoRepository<Associado, String> {
-    List<Associado> findByNome(@Param("nome") String nome);
+
     List<Associado> findByNomeContainsIgnoreCase(@Param("nome") String nome);
 
     Associado findByCpf(String cpf);
     List<Associado> findByCpfContainsIgnoreCase(String cpf);
 
-    Associado findByNomeAndCpf(String nome, String cpf);
     List<Associado> findByNomeContainsIgnoreCaseAndCpfContainsIgnoreCase(String nome, String cpf);
 }
