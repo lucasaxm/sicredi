@@ -2,12 +2,9 @@ package com.sicredi.assembleia.errorhandling;
 
 import com.sicredi.assembleia.errorhandling.apierrors.ApiError;
 import com.sicredi.assembleia.errorhandling.apierrors.ApiValidationError;
-import com.sicredi.assembleia.errorhandling.exceptions.DataNotFoundException;
-import com.sicredi.assembleia.errorhandling.exceptions.NoSearchParametersException;
-import com.sicredi.assembleia.errorhandling.exceptions.NotUniqueException;
+import com.sicredi.assembleia.errorhandling.exceptions.*;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.rest.core.RepositoryConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +20,26 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ErrorHandlerController extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler({CpfUnableToVoteException.class})
+    protected ResponseEntity<Object> handleCpfUnableToVoteException(CpfUnableToVoteException ex) {
+        return buildResponseEntity(new ApiError(HttpStatus.FORBIDDEN, ex));
+    }
+
+    @ExceptionHandler({InvalidCpfException.class})
+    protected ResponseEntity<Object> handleInvalidCpfException(InvalidCpfException ex) {
+        return buildResponseEntity(new ApiError(HttpStatus.NOT_ACCEPTABLE, ex));
+    }
+
+    @ExceptionHandler({SessionClosedException.class})
+    protected ResponseEntity<Object> handleSessionClosedException(SessionClosedException ex) {
+        return buildResponseEntity(new ApiError(HttpStatus.NOT_ACCEPTABLE, ex));
+    }
+
+    @ExceptionHandler({VotingAgainException.class})
+    protected ResponseEntity<Object> handleVotingAgainException(VotingAgainException ex) {
+        return buildResponseEntity(new ApiError(HttpStatus.CONFLICT, ex));
+    }
 
     @ExceptionHandler({NotUniqueException.class})
     protected ResponseEntity<Object> handleNotUniqueException(NotUniqueException ex) {

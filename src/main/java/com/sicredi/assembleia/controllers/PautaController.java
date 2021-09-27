@@ -3,7 +3,6 @@ package com.sicredi.assembleia.controllers;
 import com.sicredi.assembleia.entities.Pauta;
 import com.sicredi.assembleia.errorhandling.exceptions.DataNotFoundException;
 import com.sicredi.assembleia.errorhandling.exceptions.NoSearchParametersException;
-import com.sicredi.assembleia.errorhandling.exceptions.NotUniqueException;
 import com.sicredi.assembleia.services.PautaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

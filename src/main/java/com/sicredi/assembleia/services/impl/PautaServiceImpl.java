@@ -3,7 +3,6 @@ package com.sicredi.assembleia.services.impl;
 import com.sicredi.assembleia.entities.Pauta;
 import com.sicredi.assembleia.errorhandling.exceptions.DataNotFoundException;
 import com.sicredi.assembleia.errorhandling.exceptions.NoSearchParametersException;
-import com.sicredi.assembleia.errorhandling.exceptions.NotUniqueException;
 import com.sicredi.assembleia.helpers.Utils;
 import com.sicredi.assembleia.repositories.PautaRepository;
 import com.sicredi.assembleia.services.PautaService;
@@ -26,8 +25,8 @@ public class PautaServiceImpl implements PautaService {
     }
 
     @Override
-    public Pauta newPauta(Pauta associado) {
-        return repository.save(associado);
+    public Pauta newPauta(Pauta pauta) {
+        return repository.save(pauta);
     }
 
     @Override
