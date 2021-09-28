@@ -1,5 +1,6 @@
 package com.sicredi.assembleia.services;
 
+import com.sicredi.assembleia.dto.NewPautaDTO;
 import com.sicredi.assembleia.entities.Pauta;
 import com.sicredi.assembleia.errorhandling.exceptions.DataNotFoundException;
 import com.sicredi.assembleia.errorhandling.exceptions.NoSearchParametersException;
@@ -9,9 +10,9 @@ import java.util.List;
 public interface PautaService {
     List<Pauta> findAll();
 
-    Pauta newPauta(Pauta pauta);
+    Pauta newPauta(NewPautaDTO newPautaDTO);
 
-    Pauta replacePauta(String id, Pauta newPauta) throws DataNotFoundException;
+    Pauta replacePauta(String id, NewPautaDTO newPautaDTO) throws DataNotFoundException;
 
     void deletePauta(String id) throws DataNotFoundException;
 
@@ -19,5 +20,5 @@ public interface PautaService {
 
     Pauta findById(String id) throws DataNotFoundException;
 
-    Pauta updatePauta(String id, Pauta pauta) throws DataNotFoundException;
+    Pauta updatePauta(String id, NewPautaDTO newPautaDTO) throws DataNotFoundException;
 }

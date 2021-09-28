@@ -1,10 +1,10 @@
 package com.sicredi.assembleia.services.impl;
 
+import com.sicredi.assembleia.dto.NewAssociadoDTO;
 import com.sicredi.assembleia.entities.Associado;
 import com.sicredi.assembleia.entities.Pauta;
 import com.sicredi.assembleia.errorhandling.exceptions.DataNotFoundException;
 import com.sicredi.assembleia.errorhandling.exceptions.NoSearchParametersException;
-import com.sicredi.assembleia.errorhandling.exceptions.NotUniqueException;
 import com.sicredi.assembleia.helpers.Utils;
 import com.sicredi.assembleia.repositories.AssociadoRepository;
 import com.sicredi.assembleia.repositories.PautaRepository;
@@ -31,16 +31,16 @@ public class AssociadoServiceImpl implements AssociadoService {
     }
 
     @Override
-    public Associado newAssociado(Associado associado) {
-        return associadoRepository.save(associado);
+    public Associado newAssociado(NewAssociadoDTO newAssociadoDTO) {
+        return associadoRepository.save(new Associado(newAssociadoDTO));
     }
 
     @Override
-    public Associado replaceAssociado(String id, Associado newAssociado) throws DataNotFoundException {
+    public Associado replaceAssociado(String id, NewAssociadoDTO newAssociadoDTO) throws DataNotFoundException {
         Associado current = associadoRepository.findById(id).orElseThrow(new DataNotFoundException(id));
-        current.setNome(newAssociado.getNome());
-        current.setCpf(newAssociado.getCpf());
-        return associadoRepository.save(current);
+        Associado newAssociado = new Associado(newAssociadoDTO);
+        newAssociado.setId(current.getId());
+        return associadoRepository.save(newAssociado);
     }
 
     @Override
@@ -69,16 +69,12 @@ public class AssociadoServiceImpl implements AssociadoService {
     }
 
     @Override
-    public Associado updateAssociado(String id, Associado newAssociado) throws DataNotFoundException, NotUniqueException {
+    public Associado updateAssociado(String id, NewAssociadoDTO newAssociado) throws DataNotFoundException {
         Associado current = associadoRepository.findById(id).orElseThrow(new DataNotFoundException(id));
         if (!utils.isNullOrEmpty(newAssociado.getNome())) {
             current.setNome(newAssociado.getNome());
         }
         if (!utils.isNullOrEmpty(newAssociado.getCpf())) {
-            Associado found = associadoRepository.findByCpf(newAssociado.getCpf());
-            if (found != null && !found.getId().equals(id)){
-                throw new NotUniqueException("cpf");
-            }
             current.setCpf(newAssociado.getCpf());
         }
         return associadoRepository.save(current);

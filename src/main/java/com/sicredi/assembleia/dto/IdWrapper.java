@@ -2,7 +2,6 @@ package com.sicredi.assembleia.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sicredi.assembleia.entities.Associado;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -15,18 +14,12 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-@ApiModel("Voto")
-public class VotoDTO {
-
-    @JsonProperty("voto")
+@ApiModel("Referência ID")
+public class IdWrapper {
+    @JsonProperty("id")
     @NotNull
     @ApiModelProperty(
-            value = "Sim ou Nao (sem acento)",
-            allowableValues = "SIM, NAO")
-    private VotoEnum voto;
-
-    @JsonProperty("associado")
-    @NotNull
-    @ApiModelProperty("Id do votante")
-    private IdWrapper associadoIdWrapper;
+            value = "id do objeto",
+            example = "614f874ebbd3b06e9aa70b18")
+    private String id;
 }

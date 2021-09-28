@@ -1,38 +1,30 @@
-package com.sicredi.assembleia.entities;
+package com.sicredi.assembleia.dto;
 
-import com.sicredi.assembleia.dto.NewAssociadoDTO;
-import com.sicredi.assembleia.dto.NewPautaDTO;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "associados")
-@ApiModel
-public class Associado {
-    @Id
-    @ApiModelProperty(
-            value = "ID do associado",
-            example = "6151d4f1a8a3767186056cba")
-    private String id;
-
+@JsonIgnoreProperties(ignoreUnknown = true)
+@ApiModel("Criação de Associado")
+public class NewAssociadoDTO {
     @NotBlank
+    @JsonProperty("nome")
     @ApiModelProperty(
             value = "Nome do associado",
             example = "Heisenberg")
     private String nome;
 
     @NotBlank
-    @Indexed(unique = true)
+    @JsonProperty("cpf")
     @ApiModelProperty(
             value = "CPF do Associado",
             example = "59579026084",
@@ -40,10 +32,4 @@ public class Associado {
             notes = "Qualquer string é aceita, mas para estar habilitado para votar é preciso de um CPF válido" +
                     " (Apenas números).")
     private String cpf;
-
-
-    public Associado(NewAssociadoDTO dto){
-        this.nome = dto.getNome();
-        this.cpf = dto.getCpf();
-    }
 }

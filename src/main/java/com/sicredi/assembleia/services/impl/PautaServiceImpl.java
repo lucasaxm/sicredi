@@ -1,5 +1,7 @@
 package com.sicredi.assembleia.services.impl;
 
+import com.sicredi.assembleia.dto.NewPautaDTO;
+import com.sicredi.assembleia.entities.Associado;
 import com.sicredi.assembleia.entities.Pauta;
 import com.sicredi.assembleia.errorhandling.exceptions.DataNotFoundException;
 import com.sicredi.assembleia.errorhandling.exceptions.NoSearchParametersException;
@@ -25,17 +27,16 @@ public class PautaServiceImpl implements PautaService {
     }
 
     @Override
-    public Pauta newPauta(Pauta pauta) {
-        return repository.save(pauta);
+    public Pauta newPauta(NewPautaDTO newPautaDTO) {
+        return repository.save(new Pauta(newPautaDTO));
     }
 
     @Override
-    public Pauta replacePauta(String id, Pauta newPauta) throws DataNotFoundException {
+    public Pauta replacePauta(String id, NewPautaDTO newPautaDTO) throws DataNotFoundException {
         Pauta current = repository.findById(id).orElseThrow(new DataNotFoundException(id));
-        current.setAutor(newPauta.getAutor());
-        current.setDescricao(newPauta.getDescricao());
-        current.setTitulo(newPauta.getTitulo());
-        return repository.save(current);
+        Pauta newPauta = new Pauta(newPautaDTO);
+        newPauta.setId(current.getId());
+        return repository.save(newPauta);
     }
 
     @Override
@@ -64,16 +65,16 @@ public class PautaServiceImpl implements PautaService {
     }
 
     @Override
-    public Pauta updatePauta(String id, Pauta newPauta) throws DataNotFoundException {
+    public Pauta updatePauta(String id, NewPautaDTO newPautaDTO) throws DataNotFoundException {
         Pauta current = repository.findById(id).orElseThrow(new DataNotFoundException(id));
-        if (!utils.isNullOrEmpty(newPauta.getDescricao())) {
-            current.setDescricao(newPauta.getDescricao());
+        if (!utils.isNullOrEmpty(newPautaDTO.getDescricao())) {
+            current.setDescricao(newPautaDTO.getDescricao());
         }
-        if (!utils.isNullOrEmpty(newPauta.getTitulo())) {
-            current.setTitulo(newPauta.getTitulo());
+        if (!utils.isNullOrEmpty(newPautaDTO.getTitulo())) {
+            current.setTitulo(newPautaDTO.getTitulo());
         }
-        if (newPauta.getAutor() != null) {
-            current.setAutor(newPauta.getAutor());
+        if (newPautaDTO.getAutor() != null) {
+            current.setAutor(new Associado(newPautaDTO.getAutor().getId(), null, null));
         }
         return repository.save(current);
     }

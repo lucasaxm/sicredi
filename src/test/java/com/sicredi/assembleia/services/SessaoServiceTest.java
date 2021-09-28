@@ -1,5 +1,6 @@
 package com.sicredi.assembleia.services;
 
+import com.sicredi.assembleia.dto.IdWrapper;
 import com.sicredi.assembleia.dto.SessaoDTO;
 import com.sicredi.assembleia.dto.VotoDTO;
 import com.sicredi.assembleia.dto.VotoEnum;
@@ -128,15 +129,16 @@ class SessaoServiceTest {
     @Test
     void testVote() throws Exception {
         Associado associado = new Associado("1111","2222","3333");
-        VotoDTO votoDTO = new VotoDTO(VotoEnum.SIM, associado);
+        IdWrapper idWrapper = new IdWrapper(associado.getId());
+        VotoDTO votoDTO = new VotoDTO(VotoEnum.SIM, idWrapper);
         LocalDateTime now = LocalDateTime.now();
         Pauta pauta = new Pauta("1111", "2222", "3333", null);
         Sessao sessao = new Sessao("1111", true, 60L, now, 0L, 0L, new ArrayList<>(), pauta);
         Sessao expected = new Sessao("1111", true, 60L, now, 0L, 0L, new ArrayList<>(), pauta);
-        expected.vote(votoDTO);
+        expected.vote(votoDTO.getVoto(), associado);
 
         when(sessaoRepository.findById(sessao.getId())).thenReturn(Optional.of(sessao));
-        when(associadoService.findById(votoDTO.getAssociado().getId())).thenReturn(associado);
+        when(associadoService.findById(votoDTO.getAssociadoIdWrapper().getId())).thenReturn(associado);
 
         //noinspection ResultOfMethodCallIgnored
         Mockito.mockStatic(Utils.class);

@@ -11,8 +11,8 @@ POST http://localhost:8080/associados
 Content-Type: application/json
 
 {
-  "nome": "Sr. CPF Válido",
-  "cpf": "90988398001"
+  "nome": "Sr. CPF Duplicado",
+  "cpf": "07630523963"
 }
 
 ###

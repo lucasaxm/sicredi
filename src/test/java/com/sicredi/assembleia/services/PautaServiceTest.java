@@ -1,5 +1,7 @@
 package com.sicredi.assembleia.services;
 
+import com.sicredi.assembleia.dto.IdWrapper;
+import com.sicredi.assembleia.dto.NewPautaDTO;
 import com.sicredi.assembleia.entities.Associado;
 import com.sicredi.assembleia.entities.Pauta;
 import com.sicredi.assembleia.errorhandling.exceptions.DataNotFoundException;
@@ -40,23 +42,25 @@ class PautaServiceTest {
 
     @Test
     void testNewPauta() {
-        Pauta withoutId = new Pauta(null, "2222", "3333", null);
-        Pauta withId = new Pauta("1111", "2222", "3333", null);
+        NewPautaDTO newPautaDTO = new NewPautaDTO("2222", "3333", null);
+        Pauta beforeSave = new Pauta(newPautaDTO);
+        Pauta afterSave = new Pauta(newPautaDTO);
+        afterSave.setId("1111");
 
-        when(pautaRepository.save(withoutId)).thenReturn(withId);
+        when(pautaRepository.save(beforeSave)).thenReturn(afterSave);
 
-        Pauta pauta = service.newPauta(withoutId);
+        Pauta pauta = service.newPauta(newPautaDTO);
 
         assertNotNull(pauta);
-        assertEquals(withoutId.getTitulo(), pauta.getTitulo());
-        assertEquals(withoutId.getDescricao(), pauta.getDescricao());
-        assertEquals(withId.getId(), pauta.getId());
+        assertEquals(beforeSave.getTitulo(), pauta.getTitulo());
+        assertEquals(beforeSave.getDescricao(), pauta.getDescricao());
+        assertEquals(afterSave.getId(), pauta.getId());
     }
 
     @Test
     void testReplacePauta() throws DataNotFoundException {
         Pauta old = new Pauta("1111", "2222", "3333", null);
-        Pauta replace = new Pauta(null, "0000", "9999", null);
+        NewPautaDTO replace = new NewPautaDTO("0000", "9999", null);
         Pauta expected = new Pauta("1111", "0000", "9999", null);
 
         when(pautaRepository.findById(old.getId())).thenReturn(Optional.of(old));
@@ -130,14 +134,16 @@ class PautaServiceTest {
     void testUpdatePauta() throws DataNotFoundException {
         Pauta old = new Pauta("1111", "2222", "3333", null);
 
-        Pauta replaceDescricao = new Pauta(null,null, "9999", null);
+        NewPautaDTO replaceDescricao = new NewPautaDTO(null, "9999", null);
         Pauta expected1 = new Pauta(old.getId(),"2222", "9999", null);
 
-        Pauta replaceTitulo = new Pauta(null,"0000", null, null);
+        NewPautaDTO replaceTitulo = new NewPautaDTO("0000", null, null);
         Pauta expected2 = new Pauta(expected1.getId(),"0000", "9999", null);
 
+        IdWrapper autorIdWrapper = new IdWrapper("1111");
+        NewPautaDTO replaceAutor = new NewPautaDTO(null, null, autorIdWrapper);
+        Pauta replaceAutorPauta = new Pauta(expected1.getId(),"0000", "9999", new Associado(autorIdWrapper.getId(), null, null));
         Associado autor = new Associado("1111", "2222", "333");
-        Pauta replaceAutor = new Pauta(null,null, null, autor);
         Pauta expected3 = new Pauta(expected1.getId(),"0000", "9999", autor);
 
         when(pautaRepository.findById(old.getId())).thenReturn(Optional.of(old));
@@ -157,7 +163,7 @@ class PautaServiceTest {
         assertEquals(expected2, pauta);
 
         when(pautaRepository.findById(expected1.getId())).thenReturn(Optional.of(expected2));
-        when(pautaRepository.save(expected3)).thenReturn(expected3);
+        when(pautaRepository.save(replaceAutorPauta)).thenReturn(expected3);
 
         pauta = service.updatePauta(expected1.getId(), replaceAutor);
 

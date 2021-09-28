@@ -2,6 +2,7 @@ package com.sicredi.assembleia.services.impl;
 
 import com.sicredi.assembleia.dto.SessaoDTO;
 import com.sicredi.assembleia.dto.VotoDTO;
+import com.sicredi.assembleia.entities.Associado;
 import com.sicredi.assembleia.entities.Pauta;
 import com.sicredi.assembleia.entities.Sessao;
 import com.sicredi.assembleia.errorhandling.exceptions.DataNotFoundException;
@@ -68,11 +69,11 @@ public class SessaoServiceImpl implements SessaoService {
         Sessao sessao = this.findById(sessaoId);
         if (!sessao.getAberta()) throw new SessionClosedException(sessao.getId());
 
-        votoDTO.setAssociado(associadoService.findById(votoDTO.getAssociado().getId()));
+        Associado associado = associadoService.findById(votoDTO.getAssociadoIdWrapper().getId());
 
-        if (sessao.getVotantes().contains(votoDTO.getAssociado())) throw new VotingAgainException(votoDTO.getAssociado().getId());
-        Utils.cpfAbleToVote(votoDTO.getAssociado().getCpf());
-        return sessaoRepository.save(sessao.vote(votoDTO));
+        if (sessao.getVotantes().contains(associado)) throw new VotingAgainException(votoDTO.getAssociadoIdWrapper().getId());
+        Utils.cpfAbleToVote(associado.getCpf());
+        return sessaoRepository.save(sessao.vote(votoDTO.getVoto(), associado));
     }
 
     private Sessao updateStatus(Sessao sessao) {

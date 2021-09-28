@@ -5,6 +5,7 @@ import com.sicredi.assembleia.errorhandling.apierrors.ApiValidationError;
 import com.sicredi.assembleia.errorhandling.exceptions.*;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,9 +42,9 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
         return buildResponseEntity(new ApiError(HttpStatus.CONFLICT, ex));
     }
 
-    @ExceptionHandler({NotUniqueException.class})
-    protected ResponseEntity<Object> handleNotUniqueException(NotUniqueException ex) {
-        return buildResponseEntity(new ApiError(HttpStatus.CONFLICT, ex));
+    @ExceptionHandler({DuplicateKeyException.class})
+    protected ResponseEntity<Object> handleDuplicateKeyException(DuplicateKeyException ex) {
+        return buildResponseEntity(new ApiError(HttpStatus.CONFLICT, ex.getCause().getLocalizedMessage(), ex));
     }
 
     @ExceptionHandler({DataNotFoundException.class})
